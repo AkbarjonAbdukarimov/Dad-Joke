@@ -5,7 +5,7 @@ import "./JokeList.css";
 class JokeList extends Component {
   constructor(props) {
     super(props);
-    this.state = { jokes: [] };
+    this.state = { jokes: [], loading: true };
 
     this.getJoke = this.getJoke.bind(this);
     this.changeVote = this.changeVote.bind(this);
@@ -16,6 +16,7 @@ class JokeList extends Component {
     });
     this.setState({
       jokes: [...this.state.jokes, { ...joke.data, votes: 0 }],
+      loading: false,
     });
   }
   componentDidMount() {
@@ -32,6 +33,14 @@ class JokeList extends Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return (
+        <div className="JokeList-spinner">
+          <i className="far fa-8x fa-laugh fa-spin" />
+          <h1 className="JokeList-title">Loading...</h1>
+        </div>
+      );
+    }
     return (
       <div className="container">
         <div className="side-bar">
@@ -44,7 +53,12 @@ class JokeList extends Component {
               src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg"
             />
           </div>
-          <button>
+          <button
+            onClick={() => {
+              this.setState({ loading: true });
+              this.getJoke();
+            }}
+          >
             New
             <span> Jokes</span>
           </button>
